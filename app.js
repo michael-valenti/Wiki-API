@@ -17,7 +17,7 @@ app.use(bodyParser.urlencoded({
 app.use(express.static("public"));
 
 //connect to new DB name wikiDB
-mongoose.connect("mongodb://localhost:27017/wikiDB");
+mongoose.connect("mongodb://127.0.0.1:27017/wikiDB");
 
 //article schema
 const articleSchema = {
@@ -27,6 +27,19 @@ const articleSchema = {
 
 //create Article model
 const Article = mongoose.model('Article', articleSchema);
+
+//query items inside of articles collection when client visists http://localhost:3000/articles
+app.get("/articles", (req, res) =>{
+  //query for all articles and log to console
+Article.find((err, foundArticles)=>{
+  if(!err){console.log(foundArticles);
+  }else{
+    console.log(err);
+  }
+
+});
+});
+
 
 app.listen(port, function() {
 
