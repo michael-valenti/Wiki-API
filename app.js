@@ -29,7 +29,10 @@ const articleSchema = {
 const Article = mongoose.model('Article', articleSchema);
 
 //Express chained route handler
-app.route("/articles").get((req, res) => {
+//Requests that target ALL the articles in our collection
+app.route("/articles")
+
+.get((req, res) => {
     //query for all articles and log to console
     Article.find((err, foundArticles) => {
       if (!err) {
@@ -68,6 +71,22 @@ app.route("/articles").get((req, res) => {
       }
     });
   });
+
+//Requests targeting specific article
+app.route("/articles/:articleTitle")
+.get ((req, res)=>{
+Article.findOne({title: req.params.articleTitle}, (err, foundArticle)=>{
+  if(foundArticle){
+    res.send(foundArticle);
+  }else{
+    res.send("No articles found!");
+  }
+});
+});
+
+
+
+
 
 app.listen(port, function() {
 
