@@ -28,36 +28,46 @@ const articleSchema = {
 //create Article model
 const Article = mongoose.model('Article', articleSchema);
 
-//query items inside of articles collection when client visists http://localhost:3000/articles
-app.get("/articles", (req, res) => {
-  //query for all articles and log to console
-  Article.find((err, foundArticles) => {
-    if (!err) {
-      console.log(foundArticles);
-    } else {
-      console.log(err);
-    }
+//Express chained route handler
+app.route("/articles").get((req, res) => {
+    //query for all articles and log to console
+    Article.find((err, foundArticles) => {
+      if (!err) {
+        console.log(foundArticles);
+      } else {
+        console.log(err);
+      }
 
-  });
-});
+    });
+  })
 
-//when a post request is sent (using Postman currently)
-app.post("/articles", (req, res)=>{
-  //grab the title and content that was sent and create a new Article
-  const newArticle = new Article ({
-    title: req.body.title,
-    content: req.body.content
+  .post((req, res) => {
+    //grab the title and content that was sent and create a new Article
+    const newArticle = new Article({
+      title: req.body.title,
+      content: req.body.content
+    });
+    //then insert it into our collection
+    newArticle.save((err) => {
+      //tell the server if it was successful, or if it failed send the error.
+      if (!err) {
+        res.send("Successfully inserted new article!");
+      } else {
+        res.send(err);
+      }
+    });
+  })
+
+  .delete((req, res) => {
+    //delete all if no conditions are defined in {}
+    Article.deleteMany({}, (err) => {
+      if (!err) {
+        res.send("Successfully deleted all of the articles.");
+      } else {
+        res.send(err);
+      }
+    });
   });
-  //then insert it into our collection
-newArticle.save((err)=>{
-  //tell the server if it was successful, or if it failed send the error.
-  if(!err){
-    res.send("Successfully inserted new article!");
-  }else{
-    res.send(err);
-  }
-});
-});
 
 app.listen(port, function() {
 
