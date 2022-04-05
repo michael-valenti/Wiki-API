@@ -82,6 +82,22 @@ Article.findOne({title: req.params.articleTitle}, (err, foundArticle)=>{
     res.send("No articles found!");
   }
 });
+})
+
+.put ((req, res) => {
+  Article.replaceOne(
+    //conditions
+    {title: req.params.articleTitle},
+    //updates
+    {title: req.body.title, content: req.body.content},
+    (err) => {
+      if (!err){
+        res.send("Article successfully updated.");
+      } else {
+        res.send(err);
+      }
+    }
+  )
 });
 
 
